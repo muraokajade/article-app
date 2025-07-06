@@ -15,6 +15,9 @@ export const TechDetail = () => {
   const [article, setArticle] = useState<TechDetailDTO | null>(null);
   const [notFound, setNotFound] = useState(false);
 
+  console.log("画像URL:", article?.imageUrl);
+
+  //console.log(article?.imageUrl)
   useEffect(() => {
     axios
       .get(`/api/articles/${slug}`) // ← ここで Spring Boot のエンドポイントを叩いている
@@ -27,8 +30,6 @@ export const TechDetail = () => {
         setNotFound(true);
       });
   }, [slug]);
-
-  
 
   if (!article) {
     return (
@@ -49,7 +50,7 @@ export const TechDetail = () => {
       <br />
       <p className="text-gray-300 mb-4">{article.content}</p>
       <img
-        src={`/assets/images/${article.imageUrl}`}
+        src="/assets/images/get-method.png"
         alt={article.sectionTitle}
         className="w-full max-w-xl rounded shadow"
       />
