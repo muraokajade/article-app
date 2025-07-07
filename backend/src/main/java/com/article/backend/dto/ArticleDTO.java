@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class TechDetailDTO {
+public class ArticleDTO {
     private String slug;
     private String title;
     private String sectionTitle;

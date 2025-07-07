@@ -1,8 +1,8 @@
 package com.article.backend.service;
 
-import com.article.backend.dto.TechDetailDTO;
-import com.article.backend.entity.TechDetail;
-import com.article.backend.repository.TechDetailRepository;
+import com.article.backend.dto.ArticleDTO;
+import com.article.backend.entity.ArticleDetail;
+import com.article.backend.repository.ArticleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -10,17 +10,17 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class TechDetailService {
+public class ArticleService {
 
-    private final TechDetailRepository techDetailRepository;
+    private final ArticleRepository techDetailRepository;
 
-    public Optional<TechDetailDTO> getBySlug(String slug) {
+    public Optional<ArticleDTO> getBySlug(String slug) {
         return techDetailRepository.findBySlug(slug)
                 .map(this::convertToDTO);
     }
 
-    private TechDetailDTO convertToDTO(TechDetail entity) {
-        return new TechDetailDTO(
+    private ArticleDTO convertToDTO(ArticleDetail entity) {
+        return new ArticleDTO(
                 entity.getSlug(),
                 entity.getTitle(),
                 entity.getSectionTitle(),

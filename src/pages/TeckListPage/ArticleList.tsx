@@ -1,26 +1,29 @@
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { ArticleModel } from "../../models/ArticleModel"; 
 
-export const ArticleList = () => {
-  const articles = [
-    { slug: "spring-get", title: "Spring BootでGETエンドポイント作成" },
-    { slug: "spring-post", title: "POSTリクエストを送る" },
-  ];
+type Props = {
+  refresh: boolean;
+};
+
+export const ArticleList = ({ refresh }: Props) => {
+  const [articles, setArticles] = useState<ArticleModel[]>([]);
+
+  useEffect(() => {
+    axios.get("/api/admin/articles").then((res) => {
+      setArticles(res.data);
+    });
+  }, [refresh]);
 
   return (
-    <div className="p-6 text-white">
-      <h1 className="text-2xl font-bold mb-4">技術記事一覧</h1>
-      <ul>
-        {articles.map((article) => (
-          <li key={article.slug}>
-            <Link
-              to={`/tech/${article.slug}`}
-              className="text-blue-400 hover:underline"
-            >
-              {article.title}
-            </Link>
-          </li>
-        ))}
-      </ul>
+    <div>
+      <h2 className="text-xl font-semibold mb-2">📚 投稿済み記事</h2>
+      {articles.map((article) => (
+        <div key={article.id} className="border p-3 my-2 rounded shadow-sm">
+          <h3 className="font-bold">{article.title}</h3>
+          <p className="text-sm text-gray-600">{article.content}</p>
+        </div>
+      ))}
     </div>
   );
 };
