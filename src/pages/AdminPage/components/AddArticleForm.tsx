@@ -15,7 +15,6 @@ export const AddArticleForm = ({ onSuccess }: Props) => {
 
   const { idToken, loading } = useAuth();
 
-  console.log("🔥 idToken: ", idToken);//見えてる
   const handleSubmit = async (e: React.FormEvent) => {
     if (loading) return;
     e.preventDefault();
@@ -35,7 +34,7 @@ export const AddArticleForm = ({ onSuccess }: Props) => {
       await axios.post("/api/admin/articles", formData, {
         headers: {
           Authorization: `Bearer ${idToken}`,
-          "Content-Type": "multipart/form-data",
+          // "Content-Type": "multipart/form-data",
         },
       });
       setSlug("");
@@ -83,6 +82,7 @@ export const AddArticleForm = ({ onSuccess }: Props) => {
         className="w-full"
         onChange={(e) => {
           if (e.target.files?.[0]) {
+            console.log("📁 選択したファイル:", e.target.files[0]); 
             setImageFile(e.target.files[0]);
           }
         }}

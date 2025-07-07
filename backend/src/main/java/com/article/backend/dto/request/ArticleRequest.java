@@ -13,5 +13,5 @@ public class ArticleRequest {
     private String title;
     private String sectionTitle;
     private String content;
-    private MultipartFile imageUrl;
+    private MultipartFile image;
 }

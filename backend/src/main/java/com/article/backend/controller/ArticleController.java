@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 
 @CrossOrigin(origins = "http://localhost:3000")
@@ -20,6 +22,12 @@ public class ArticleController {
         return articleService.getBySlug(slug)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
+    }
+    @GetMapping
+    public ResponseEntity<List<ArticleDTO>> getPublishedArticle()
+    {
+        List<ArticleDTO> articleDTOS = articleService.getPublishedArticles();
+        return ResponseEntity.ok(articleDTOS);
     }
 
 }

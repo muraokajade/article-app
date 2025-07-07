@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 @Entity
 @Data
 @AllArgsConstructor
+@Table(name = "articles")
 @NoArgsConstructor
 public class ArticleEntity {
     @Id
@@ -21,7 +22,7 @@ public class ArticleEntity {
     @Column(unique = true)
     private String slug;
     private String title;
-    private String useEmail;
+    private String userEmail;
     private String sectionTitle;
     private String content;
     private String imageUrl;
@@ -30,6 +31,13 @@ public class ArticleEntity {
 
     @UpdateTimestamp
     private LocalDateTime updatedAt;
+
+    @Column(name = "is_published", nullable = false)
+    private boolean isPublished = true;
+
+    public boolean isPublished() {
+        return this.isPublished;
+    }
 
 
 

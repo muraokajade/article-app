@@ -18,12 +18,14 @@ interface AuthContextType {
   currentUser: User | null;
   isAuthenticated: boolean;
   loading: boolean;
+  idToken: string | null
 }
 
 const AuthContext = createContext<AuthContextType>({
   currentUser: null,
   isAuthenticated: false,
   loading: false,
+  idToken: null
 });
 
 export const useAuth = () => useContext(AuthContext);
@@ -32,13 +34,20 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setCurrentUser(user);
-      setLoading(false);
-    });
-    return () => unsubscribe();
-  }, []);
+useEffect(() => {
+  const unsubscribe = onAuthStateChanged(auth, async (user) => {
+    setCurrentUser(user);
+    if (user) {
+      const token = await user.getIdToken();
+      setIdToken(token);
+    } else {
+      setIdToken(null);
+    }
+    setLoading(false);
+  });
+  return () => unsubscribe();
+}, []);
+
 
   const value: AuthContextType = {
     currentUser,
@@ -141,15 +150,24 @@ export const UseAuthContextArticle: FC = () => {
         Firebaseの <code className="text-yellow-300">onAuthStateChanged()</code>{" "}
         を <code>useEffect</code> で呼び出すことで、
         ユーザーのログイン状態をリアルタイムに検出・反映します。
+        同時にAPI認証時に使うトークンも取得します。
+        <code className="text-yellow-300">user.getIdToken()</code>{" "}
       </p>
       <SyntaxHighlighter language="tsx" style={oneDark}>
         {`useEffect(() => {
-  const unsubscribe = onAuthStateChanged(auth, (user) => {
+  const unsubscribe = onAuthStateChanged(auth, async (user) => {
     setCurrentUser(user);
+    if (user) {
+      const token = await user.getIdToken();
+      setIdToken(token);
+    } else {
+      setIdToken(null);
+    }
     setLoading(false);
   });
   return () => unsubscribe();
-}, []);`}
+}, []);
+`}
       </SyntaxHighlighter>
 
       <h3 className="text-xl font-semibold mt-6 mb-1">4. loadingの扱い</h3>

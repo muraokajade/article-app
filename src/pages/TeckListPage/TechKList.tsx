@@ -1,6 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import techData from "../../data/techData.json";
+import axios from "axios";
+import { ArticleModel } from "../../models/ArticleModel";
 interface TechItem {
   title: string;
   category: string;
@@ -11,7 +13,7 @@ interface TechItem {
 export const TechList = () => {
   const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
-
+  const [articles, setArticles] = useState<ArticleModel[]>([]);
   const categories = ["Spring", "React", "Vue", "Firebase", "Tailwind"];
 
   const filtered = (techData as TechItem[]).filter(
@@ -25,6 +27,19 @@ export const TechList = () => {
     category: cat,
     items: filtered.filter((item) => item.category === cat),
   }));
+  useEffect(() => {
+    const fetchArticles = async () => {
+      try {
+        const res = await axios.get("/api/articles");
+        console.log(res.data);
+        const publishedArticles: ArticleModel[] = res.data;
+        setArticles(publishedArticles);
+      } catch (e) {
+        console.error("記事取得失敗", e);
+      }
+    };
+    fetchArticles();
+  }, []);
 
   return (
     <div className="p-6 text-white">

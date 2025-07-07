@@ -1,6 +1,6 @@
-import { Navbar } from "../components/Navbar";
+import { Navbar } from "../CommonPage/components/Navbar";
 
-import { Footer } from "../components/Footer";
+import { Footer } from "../CommonPage/components/Footer";
 import { Home } from "../HomePage/components/Home";
 
 export const HomePage = () => {

@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { Navbar } from "./pages/components/Navbar";
-import { Footer } from "./pages/components/Footer";
+import { Navbar } from "./pages/CommonPage/components/Navbar";
+import { Footer } from "./pages/CommonPage/components/Footer";
 
 import { Home } from "./pages/HomePage/components/Home";
 import { TechList } from "./pages/TeckListPage/TechKList";

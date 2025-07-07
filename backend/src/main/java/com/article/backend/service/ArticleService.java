@@ -15,6 +15,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -35,7 +36,10 @@ public class ArticleService {
                 entity.getTitle(),
                 entity.getSectionTitle(),
                 entity.getContent(),
-                entity.getImageUrl()
+                entity.getImageUrl(),
+                entity.getCreatedAt(),
+                entity.getUpdatedAt(),
+                entity.isPublished()
         );
     }
 
@@ -55,12 +59,14 @@ public class ArticleService {
         entity.setSectionTitle(request.getSectionTitle());
         entity.setContent(request.getContent());
 
+        System.out.println("アップロード画像: " + request.getImage());
 
-        String imageUrl = saveImageAndGetUrl(request.getImageUrl());
+        String imageUrl = saveImageAndGetUrl(request.getImage());
         entity.setImageUrl(imageUrl);
 
-        entity.setUseEmail(email);
+        entity.setUserEmail(email);
         entity.setCreatedAt(LocalDateTime.now());
+        entity.setPublished(true);
         return entity;
     }
 
@@ -84,4 +90,26 @@ public class ArticleService {
         }
     }
 
+    public List<ArticleDTO> getAllArticles() {
+        return articleRepository.findAll()
+                .stream()
+                .map(this::convertToDTO)
+                .toList();
+
+    }
+
+    public List<ArticleDTO> getPublishedArticles() {
+        return articleRepository.findByIsPublishedTrue()
+                .stream()
+                .map(this::convertToDTO)
+                .toList();
+    }
+
+    public void togglePublished(String slug) {
+        ArticleEntity article = articleRepository.findBySlug(slug)
+                .orElseThrow(() -> new RuntimeException("記事が見つかりません: " + slug));
+
+        article.setPublished(!article.isPublished()); // 状態を反転
+        articleRepository.save(article);
+    }
 }
