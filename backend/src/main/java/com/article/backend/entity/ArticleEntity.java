@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ArticleDetail {
+public class ArticleEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -21,6 +21,7 @@ public class ArticleDetail {
     @Column(unique = true)
     private String slug;
     private String title;
+    private String useEmail;
     private String sectionTitle;
     private String content;
     private String imageUrl;
