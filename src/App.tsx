@@ -8,6 +8,8 @@ import { TechDetail } from "./pages/TeckListPage/components/TechDetail";
 import { SyntaxGuide } from "./pages/HomePage/components/SyntaxGuid";
 import { Login } from "./pages/Login";
 import { Register } from "./pages/Register";
+import AdminRoute from "./routes/AdminRoutes";
+import { AdminPage } from "./pages/AdminPage/AdminPage";
 
 export default function App() {
   return (
@@ -22,6 +24,14 @@ export default function App() {
             <Route path="/basics" element={<SyntaxGuide />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route
+              path="/admin"
+              element={
+                <AdminRoute>
+                  <AdminPage />
+                </AdminRoute>
+              }
+            />
           </Routes>
         </main>
         <Footer />

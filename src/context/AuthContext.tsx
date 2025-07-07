@@ -11,11 +11,13 @@ import { auth } from "../libs/firebase"; // Firebase初期化済みのappをimpo
 interface AuthContextType {
   currentUser: User | null;
   isAuthenticated: boolean;
+  loading: boolean
 }
 
 const AuthContext = createContext<AuthContextType>({
   currentUser: null,
   isAuthenticated: false,
+  loading: false,
 });
 
 // Contextを使いやすくするHook
@@ -37,6 +39,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const value: AuthContextType = {
     currentUser,// FirebaseのUserオブジェクト（ログインしていれば入る）
     isAuthenticated: !!currentUser, // ← ここ重要！（nullでfalse、ユーザーありでtrue）
+    loading
   };
   return (
     <AuthContext.Provider value={value}>

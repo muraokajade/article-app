@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { ArticleModel } from "../../models/ArticleModel"; 
+import { ArticleModel } from "../../models/ArticleModel";
+import { useAuth } from "../../context/AuthContext";
 
 type Props = {
   refresh: boolean;
@@ -8,12 +9,24 @@ type Props = {
 
 export const ArticleList = ({ refresh }: Props) => {
   const [articles, setArticles] = useState<ArticleModel[]>([]);
-
+  const { loading, currentUser } = useAuth();
   useEffect(() => {
-    axios.get("/api/admin/articles").then((res) => {
-      setArticles(res.data);
-    });
-  }, [refresh]);
+    const fetchArticles = async () => {
+      if (loading) return;
+      try {
+        const token = await currentUser?.getIdToken();
+        const res = await axios.get("/api/admin//articles", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setArticles(res.data)
+      } catch (e) {
+        console.error("記事取得失敗", e);
+      }
+    };
+    fetchArticles();
+  }, [refresh, loading, currentUser]);
 
   return (
     <div>
