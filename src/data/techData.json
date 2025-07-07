@@ -1,21 +1,32 @@
 [
-    {
-      "title": "Spring Boot入門",
-      "category": "Spring",
-      "slug": "spring-boot-intro",
-      "thumbnail": "/images/spring.png"
-    },
-    {
-      "title": "GETメソッドで記事取得（React × Spring Boot）",
-      "category": "Spring",
-      "slug": "get-method-react-spring",
-      "thumbnail": "/images/get-method.png"
-    },
-    {
-      "title": "React Hooks活用術",
-      "category": "React",
-      "slug": "react-hooks",
-      "thumbnail": "/images/hooks.png"
-    }
-  ]
-  
+  {
+    "title": "Spring Boot入門",
+    "category": "Spring",
+    "slug": "spring-boot-intro",
+    "thumbnail": "/images/spring.png"
+  },
+  {
+    "title": "GETメソッドで記事取得（React × Spring Boot）",
+    "category": "Spring",
+    "slug": "get-method-react-spring",
+    "thumbnail": "/images/get-method.png"
+  },
+  {
+    "title": "【React × Firebase】アプリ全体でログイン情報を使える useAuth フックと useContext の実装解説",
+    "category": "React",
+    "slug": "useContext-hooks",
+    "thumbnail": "/images/hooks.png"
+  },
+  {
+    "title": "Firebase認証の全体像",
+    "category": "Firebase",
+    "slug": "firebase-overview",
+    "thumbnail": "/images/firebase-overview.png"
+  },
+  {
+    "title": "FirebaseでのJWT発行フロー",
+    "category": "Firebase",
+    "slug": "firebase-auth-flow",
+    "thumbnail": "/images/firebase-auth-flow.png"
+  }
+]

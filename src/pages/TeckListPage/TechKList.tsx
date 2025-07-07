@@ -65,7 +65,7 @@ export const TechList = () => {
                 {group.items.map((item, i) => (
                   <li key={i}>
                     <Link
-                      to={`/tech/${item.slug}`}
+                      to={`/articles/${item.slug}`}
                       className="block p-4 rounded bg-gray-800 hover:bg-gray-700 transition"
                     >
                       <div className="flex items-center gap-4">

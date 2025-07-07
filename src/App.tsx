@@ -10,10 +10,14 @@ import { Login } from "./pages/Login";
 import { Register } from "./pages/Register";
 import AdminRoute from "./routes/AdminRoutes";
 import { AdminPage } from "./pages/AdminPage/AdminPage";
+import { FirebaseOverview } from "./pages/ArticleExplanation/components/FirebaseOverview";
+import { FirebaseAuthFlow } from "./pages/ArticleExplanation/FirebaseAuthFlow";
+import { UseAuthContextArticle } from "./pages/ArticleExplanation/components/UseAuthContextArticle";
 
 export default function App() {
   return (
     <Router>
+      <div className="App"></div>
       <div className="flex flex-col min-h-screen bg-gray-900 text-white">
         <Navbar />
         <main className="flex-grow">
@@ -31,6 +35,18 @@ export default function App() {
                   <AdminPage />
                 </AdminRoute>
               }
+            />
+            <Route
+              path="/articles/firebase-overview"
+              element={<FirebaseOverview />}
+            />
+            <Route
+              path="/articles/firebase-auth-flow"
+              element={<FirebaseAuthFlow />}
+            />
+            <Route
+              path="/articles/useContext-hooks"
+              element={<UseAuthContextArticle />}
             />
           </Routes>
         </main>

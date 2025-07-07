@@ -14,7 +14,9 @@
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
     "isolatedModules": true,
-    "noEmit": true
+    "noEmit": true,
+    "typeRoots": ["./node_modules/@types", "./src/type"],
   },
+  
   "include": ["src"]
 }
