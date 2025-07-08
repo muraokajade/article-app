@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 public class ArticleDTO {
+    private Long id;
     private String slug;
     private String title;
     private String sectionTitle;

@@ -16,17 +16,7 @@ export const TechList = () => {
   const [articles, setArticles] = useState<ArticleModel[]>([]);
   const categories = ["Spring", "React", "Vue", "Firebase", "Tailwind"];
 
-  const filtered = (techData as TechItem[]).filter(
-    (item) =>
-      item.title.toLowerCase().includes(search.toLowerCase()) &&
-      (selectedCategory === "" || item.category === selectedCategory)
-  );
-
   // カテゴリ別にグループ化
-  const grouped = categories.map((cat) => ({
-    category: cat,
-    items: filtered.filter((item) => item.category === cat),
-  }));
   useEffect(() => {
     const fetchArticles = async () => {
       try {
@@ -40,6 +30,19 @@ export const TechList = () => {
     };
     fetchArticles();
   }, []);
+
+  const filtered = articles.filter(
+    (item) =>
+      item.title.toLowerCase().includes(search.toLowerCase()) &&
+      (selectedCategory === "" || item.sectionTitle === selectedCategory)
+  );
+  const grouped = categories.map((cat) => ({
+    category: cat,
+    items: filtered.filter(
+      (item) => item.sectionTitle.toLowerCase() === cat.toLowerCase()
+    ),
+  }));
+  console.log("🔍 grouped articles:", grouped);
 
   return (
     <div className="p-6 text-white">
@@ -85,11 +88,18 @@ export const TechList = () => {
                     >
                       <div className="flex items-center gap-4">
                         <img
-                          src={item.thumbnail}
+                          src={item.imageUrl || "/default-thumbnail.jpg"}
                           alt={item.title}
                           className="w-16 h-16 object-cover rounded"
                         />
-                        <span className="text-lg">{item.title}</span>
+                        <div className="flex flex-col">
+                          <span className="text-lg font-semibold mb-4">
+                            {item.title}
+                          </span>
+                          <p className="text-sm text-gray-300">
+                            {item.content}
+                          </p>
+                        </div>
                       </div>
                     </Link>
                   </li>

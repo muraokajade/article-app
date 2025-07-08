@@ -12,49 +12,57 @@ const useAuthCode = `import {
   ReactNode,
 } from "react";
 import { onAuthStateChanged, User } from "firebase/auth";
-import { auth } from "../libs/firebase";
+import { auth } from "../libs/firebase"; // Firebase初期化済みのappをimport
 
 interface AuthContextType {
   currentUser: User | null;
   isAuthenticated: boolean;
   loading: boolean;
-  idToken: string | null
+  idToken: string | null;
+  isAdmin: boolean;
 }
 
 const AuthContext = createContext<AuthContextType>({
   currentUser: null,
   isAuthenticated: false,
   loading: false,
-  idToken: null
+  idToken: null,
+  isAdmin: false,
 });
 
+// Contextを使いやすくするHook
 export const useAuth = () => useContext(AuthContext);
 
+// Contextに値を提供するProvider
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [idToken, setIdToken] = useState<string | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      setCurrentUser(user);
+      if (user) {
+        const token = await user.getIdToken();
+        setIdToken(token);
+        const tokenResult = await user.getIdTokenResult();
+        setIsAdmin(tokenResult.claims.admin === true);
+      } else {
+        setIdToken(null);
+      }
+      setLoading(false);
+    });
+    return () => unsubscribe();
+  }, []);
 
-useEffect(() => {
-  const unsubscribe = onAuthStateChanged(auth, async (user) => {
-    setCurrentUser(user);
-    if (user) {
-      const token = await user.getIdToken();
-      setIdToken(token);
-    } else {
-      setIdToken(null);
-    }
-    setLoading(false);
-  });
-  return () => unsubscribe();
-}, []);
-
-
+  //これによって、どの子コンポーネントでも useAuth() でこの情報を取得できるようになります。
   const value: AuthContextType = {
-    currentUser,
-    isAuthenticated: !!currentUser,
+    currentUser, // FirebaseのUserオブジェクト（ログインしていれば入る）
+    isAuthenticated: !!currentUser, // ← ここ重要！（nullでfalse、ユーザーありでtrue）
     loading,
+    idToken,
+    isAdmin
   };
-
   return (
     <AuthContext.Provider value={value}>
       {!loading && children}
@@ -65,15 +73,32 @@ useEffect(() => {
 const indexTsCode = `// src/context/index.ts
 export { AuthProvider, useAuth } from "./useAuth";`;
 
-const usageCode = `import { useAuth } from "@/context";
+const usageCode = `// 必要なContextを読み込む（useAuthはContextの値を取り出すカスタムHook）
+import { useAuth } from "@/context";
 
 const ProtectedComponent = () => {
-  const { isAuthenticated, loading } = useAuth();
+  // Contextから認証に関する情報を取得
+  const { isAuthenticated, loading, idToken, isAdmin } = useAuth();
 
-  if (loading) return <p>確認中...</p>;
+  // Firebaseの認証状態がまだ確定していない（トークン取得中など）
+  if (loading) return <p>確認中...（Loading...）</p>;
+
+  // 認証されていない場合の表示
   if (!isAuthenticated) return <p>ログインが必要です。</p>;
 
-  return <div>ログイン済のコンテンツ</div>;
+  // 管理者専用ページにしたい場合は、ここで制御
+  if (!isAdmin) return <p>管理者権限が必要です。</p>;
+
+  // 認証・認可（isAdmin）が通った場合の表示内容
+  return (
+    <div>
+      <h2>ようこそ、管理者ユーザー様！</h2>
+      <p>このコンポーネントはログイン済ユーザーかつ管理者のみが表示可能です。</p>
+
+      {/* 実際の処理に使うなら、idToken を使ってバックエンドAPIにアクセスなど */}
+      <p>トークンを使って管理者向けのAPIにアクセスすることも可能です。</p>
+    </div>
+  );
 };`;
 
 const appWrapCode = `// App.tsx
@@ -125,6 +150,8 @@ export const UseAuthContextArticle: FC = () => {
   currentUser: null,
   isAuthenticated: false,
   loading: false,
+  idToken: null,
+  isAdmin: false
 });`}
       </SyntaxHighlighter>
 
@@ -135,9 +162,10 @@ export const UseAuthContextArticle: FC = () => {
         Contextの中身を取り出す処理をラップし、任意のコンポーネントから簡単に呼び出せるようにします。
         このおかげで、どこでも{" "}
         <code className="text-yellow-300">
-          const &#123; currentUser &#125; = useAuth();
+          const &#123; isAuthenticated, idToken, , isAdmin, currentUser &#125; =
+          useAuth();
         </code>{" "}
-        が使えるようになります。
+        が用途に応じて使えるようになります。
       </p>
       <SyntaxHighlighter language="tsx" style={oneDark}>
         {`export const useAuth = () => useContext(AuthContext);`}
@@ -152,6 +180,7 @@ export const UseAuthContextArticle: FC = () => {
         ユーザーのログイン状態をリアルタイムに検出・反映します。
         同時にAPI認証時に使うトークンも取得します。
         <code className="text-yellow-300">user.getIdToken()</code>{" "}
+        。FirebaseにログインしたユーザーのIDトークンに含まれるカスタムクレーム（ここではadmin）を取得し、trueであれば管理者と判定しています。別記事「[admin認証の仕組み（Firebase × React）]」で解説
       </p>
       <SyntaxHighlighter language="tsx" style={oneDark}>
         {`useEffect(() => {
@@ -160,6 +189,8 @@ export const UseAuthContextArticle: FC = () => {
     if (user) {
       const token = await user.getIdToken();
       setIdToken(token);
+      const tokenResult = await user.getIdTokenResult();
+      setIsAdmin(tokenResult.claims.admin === true);
     } else {
       setIdToken(null);
     }

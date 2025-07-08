@@ -5,21 +5,23 @@ import {
   useState,
   ReactNode,
 } from "react";
-import { getAuth, onAuthStateChanged, User } from "firebase/auth";
+import { onAuthStateChanged, User } from "firebase/auth";
 import { auth } from "../libs/firebase"; // Firebase初期化済みのappをimport
 
 interface AuthContextType {
   currentUser: User | null;
   isAuthenticated: boolean;
-  loading: boolean
+  loading: boolean;
   idToken: string | null;
+  isAdmin: boolean;
 }
 
 const AuthContext = createContext<AuthContextType>({
   currentUser: null,
   isAuthenticated: false,
   loading: false,
-  idToken: null
+  idToken: null,
+  isAdmin: false,
 });
 
 // Contextを使いやすくするHook
@@ -30,12 +32,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [idToken, setIdToken] = useState<string | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async(user) => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setCurrentUser(user);
-      if(user) {
+      if (user) {
         const token = await user.getIdToken();
         setIdToken(token);
+        const tokenResult = await user.getIdTokenResult();
+        setIsAdmin(tokenResult.claims.admin === true);
       } else {
         setIdToken(null);
       }
@@ -46,10 +51,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   //これによって、どの子コンポーネントでも useAuth() でこの情報を取得できるようになります。
   const value: AuthContextType = {
-    currentUser,// FirebaseのUserオブジェクト（ログインしていれば入る）
+    currentUser, // FirebaseのUserオブジェクト（ログインしていれば入る）
     isAuthenticated: !!currentUser, // ← ここ重要！（nullでfalse、ユーザーありでtrue）
     loading,
-    idToken
+    idToken,
+    isAdmin
   };
   return (
     <AuthContext.Provider value={value}>

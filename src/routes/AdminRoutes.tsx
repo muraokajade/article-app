@@ -13,7 +13,6 @@ const AdminRoute = ({ children }: { children: ReactNode }) => {
       if (loading) return;
       if (currentUser) {
         const tokenResult = await currentUser.getIdTokenResult(true);
-        console.log("Claims:", tokenResult.claims);
         setIsAdmin(!!tokenResult.claims.admin);
       }
     };

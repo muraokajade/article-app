@@ -11,8 +11,14 @@ import { Register } from "./pages/Register";
 import AdminRoute from "./routes/AdminRoutes";
 import { AdminPage } from "./pages/AdminPage/AdminPage";
 import { FirebaseOverview } from "./pages/ArticleExplanation/components/FirebaseOverview";
-import { FirebaseAuthFlow } from "./pages/ArticleExplanation/FirebaseAuthFlow";
+import { FirebaseAdminFlow } from "./pages/ArticleExplanation/FirebaseAdminFlow"; 
 import { UseAuthContextArticle } from "./pages/ArticleExplanation/components/UseAuthContextArticle";
+import { SpringFirebaseFlow } from "./pages/ArticleExplanation/components/SpringFirebaseFlow";
+import { DoFilterExplanation } from "./pages/ArticleExplanation/components/DoFilterExplanation";
+import { MethodSecurityBasics } from "./pages/ArticleExplanation/components/MethodSecurityBasics";
+import { EditArticleFlowSpring } from "./pages/ArticleExplanation/components/EditArticleFlowSpring";
+import { EditArticleFlowReact } from "./pages/ArticleExplanation/components/EditArticleFlowReact";
+import { DeleteArticleFlow } from "./pages/ArticleExplanation/components/DeleteArticleFlow";
 
 export default function App() {
   return (
@@ -41,12 +47,36 @@ export default function App() {
               element={<FirebaseOverview />}
             />
             <Route
-              path="/articles/firebase-auth-flow"
-              element={<FirebaseAuthFlow />}
+              path="/articles/admin-claims-firebase"
+              element={<FirebaseAdminFlow />}
             />
             <Route
               path="/articles/useContext-hooks"
               element={<UseAuthContextArticle />}
+            />
+            <Route
+              path="/articles/spring-jwt-auth"
+              element={<SpringFirebaseFlow />}
+            />
+            <Route
+              path="/articles/do-filter-explanation"
+              element={<DoFilterExplanation />}
+            />
+            <Route
+              path="/articles/method-security-basics"
+              element={<MethodSecurityBasics />}
+            />
+            <Route
+              path="/articles/article-edit-spring"
+              element={<EditArticleFlowSpring />}
+            />
+            <Route
+              path="/articles/article-edit-react"
+              element={<EditArticleFlowReact />}
+            />
+            <Route
+              path="/articles/delete-article"
+              element={<DeleteArticleFlow />}
             />
           </Routes>
         </main>

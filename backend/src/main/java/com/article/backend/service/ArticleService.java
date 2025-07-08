@@ -4,7 +4,9 @@ import com.article.backend.dto.ArticleDTO;
 import com.article.backend.dto.request.ArticleRequest;
 import com.article.backend.entity.ArticleEntity;
 import com.article.backend.repository.ArticleRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -21,6 +23,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class ArticleService {
 
     private final ArticleRepository articleRepository;
@@ -32,6 +35,7 @@ public class ArticleService {
 
     private ArticleDTO convertToDTO(ArticleEntity entity) {
         return new ArticleDTO(
+                entity.getId(),
                 entity.getSlug(),
                 entity.getTitle(),
                 entity.getSectionTitle(),
@@ -45,8 +49,6 @@ public class ArticleService {
 
     public ArticleDTO createArticle(ArticleRequest request, String email) {
         ArticleEntity entity = convertToEntity(request,email);
-
-
         ArticleEntity saved = articleRepository.save(entity);
         return convertToDTO(saved);
 
@@ -58,13 +60,24 @@ public class ArticleService {
         entity.setTitle(request.getTitle());
         entity.setSectionTitle(request.getSectionTitle());
         entity.setContent(request.getContent());
-
         System.out.println("アップロード画像: " + request.getImage());
-
         String imageUrl = saveImageAndGetUrl(request.getImage());
         entity.setImageUrl(imageUrl);
-
         entity.setUserEmail(email);
+        entity.setCreatedAt(LocalDateTime.now());
+        entity.setPublished(true);
+        return entity;
+    }
+
+    private ArticleEntity convertToEntity(ArticleRequest request) {
+        ArticleEntity entity = new ArticleEntity();
+        entity.setSlug(request.getSlug());
+        entity.setTitle(request.getTitle());
+        entity.setSectionTitle(request.getSectionTitle());
+        entity.setContent(request.getContent());
+        System.out.println("アップロード画像: " + request.getImage());
+        String imageUrl = saveImageAndGetUrl(request.getImage());
+        entity.setImageUrl(imageUrl);
         entity.setCreatedAt(LocalDateTime.now());
         entity.setPublished(true);
         return entity;
@@ -111,5 +124,36 @@ public class ArticleService {
 
         article.setPublished(!article.isPublished()); // 状態を反転
         articleRepository.save(article);
+    }
+
+    public ArticleDTO updateArticle(Long id, ArticleRequest request) {
+        //該当記事があるか判定
+        ArticleEntity existing = articleRepository.findById(id)
+                .orElseThrow(() ->new RuntimeException("記事が存在しません。"));
+
+        existing.setSlug(request.getSlug());
+        existing.setSectionTitle(request.getSectionTitle());
+        existing.setTitle(request.getTitle());
+        existing.setContent(request.getContent());
+
+        String imageUrl = saveImageAndGetUrl(request.getImage());
+        existing.setImageUrl(imageUrl);
+
+        ArticleEntity saved = articleRepository.save(existing);
+        return convertToDTO(saved);
+
+    }
+
+    public ArticleDTO findById(Long id) {
+        ArticleEntity entity =  articleRepository.findById(id)
+                .orElseThrow(() ->new RuntimeException("記事が見つかりません。"));
+
+        return convertToDTO(entity);
+    }
+
+    public void deleteById(Long id) {
+        ArticleEntity entity = articleRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("記事が見つかりません。"));
+        articleRepository.deleteById(id);
     }
 }

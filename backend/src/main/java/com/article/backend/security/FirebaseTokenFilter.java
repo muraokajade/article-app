@@ -46,8 +46,7 @@ public class FirebaseTokenFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(auth);
             } catch (FirebaseAuthException e) {
                 logger.warn("Firebaseトークンの検証に失敗しました: " + e.getMessage());
-                response.sendError(HttpServletResponse.SC_FORBIDDEN, "Invalid Firebase token");
-                return; // 処理を中断
+
             }
         }
 

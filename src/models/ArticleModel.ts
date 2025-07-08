@@ -4,9 +4,9 @@ export interface ArticleModel {
   title: string;
   sectionTitle: string;
   content: string;
-  imageUrl: string;
-  createdAt:string;
+  imageUrl: string | null;
+  createdAt: string;
   updatedAt: string;
   published: boolean;
-  category: string
-};
+  category: string;
+}

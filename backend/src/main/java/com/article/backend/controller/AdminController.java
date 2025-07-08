@@ -49,5 +49,33 @@ public class AdminController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/article/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ArticleDTO> getArticle(@RequestHeader(name = "Authorization") String token,
+                                                 @PathVariable Long id) {
+        firebaseAuthService.verifyAdminAndGetEmail(token);
+        ArticleDTO articleDTO = articleService.findById(id);
+        return ResponseEntity.ok(articleDTO);
+    }
+
+    @PutMapping("/article/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ArticleDTO> updateArticle(@RequestHeader(name = "Authorization") String token,
+                                                    @PathVariable Long id,
+                                                    @ModelAttribute ArticleRequest request)
+    {
+        firebaseAuthService.verifyAdminAndGetEmail(token);
+        ArticleDTO articleDTO = articleService.updateArticle(id,request);
+        return ResponseEntity.ok(articleDTO);
+    }
+    @DeleteMapping("/article/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> deleteById(@RequestHeader(name = "Authorization") String token,
+                                                 @PathVariable Long id)
+    {
+        firebaseAuthService.verifyAdminAndGetEmail(token);
+        articleService.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
 
 }

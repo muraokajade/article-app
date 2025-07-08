@@ -11,7 +11,7 @@ export const AdminPage = () => {
     <div className="p-4 max-w-4xl mx-auto">
       <h1 className="text-2xl font-bold mb-4">🛠 管理者ダッシュボード</h1>
       <AddArticleForm onSuccess={handleRefresh} />
-      <ArticleList refresh={refresh} />
+      <ArticleList refresh={refresh} setRefresh={handleRefresh}/>
     </div>
   );
 };
