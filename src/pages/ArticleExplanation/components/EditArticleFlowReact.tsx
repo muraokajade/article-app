@@ -1,8 +1,12 @@
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/cjs/styles/prism";
+import { ArticleModel } from "../../../models/ArticleModel";
+import axios from "axios";
 
 export const EditArticleFlowReact = () => {
+
   const state = `
       const [slug, setSlug] = useState("");
       const [title, setTitle] = useState("");

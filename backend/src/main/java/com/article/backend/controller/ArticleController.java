@@ -17,7 +17,7 @@ public class ArticleController {
 
     private final ArticleService articleService;
 
-    @GetMapping("/{slug}")
+    @GetMapping("/slug/{slug}")
     public ResponseEntity<ArticleDTO> getArticleBySlug(@PathVariable String slug) {
         return articleService.getBySlug(slug)
                 .map(ResponseEntity::ok)
