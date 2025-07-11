@@ -2,8 +2,6 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
 
 export const Home = () => {
-    const {idToken} = useAuth();
-  console.log(idToken);
   return (
     <div className="bg-gray-900 text-white py-16 px-6 md:px-20 min-h-screen">
       <h1 className="text-4xl font-bold mb-6 text-blue-400">DevNav+ へようこそ</h1>

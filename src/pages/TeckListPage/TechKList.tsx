@@ -21,7 +21,6 @@ export const TechList = () => {
     const fetchArticles = async () => {
       try {
         const res = await axios.get("/api/articles");
-        console.log(res.data);
         const publishedArticles: ArticleModel[] = res.data;
         setArticles(publishedArticles);
       } catch (e) {
@@ -42,7 +41,7 @@ export const TechList = () => {
       (item) => item.sectionTitle.toLowerCase() === cat.toLowerCase()
     ),
   }));
-  console.log("🔍 grouped articles:", grouped);
+
 
   return (
     <div className="p-6 text-white">
